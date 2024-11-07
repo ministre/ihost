@@ -9,6 +9,7 @@ The purpose of this project to learn how to create C++ applications and build de
 ## Compiling on Debian 12
 
 ```bash
-   sudo apt update
-   sudo apt install g++
+sudo apt update
+sudo apt install g++
+cd src/
 ```
