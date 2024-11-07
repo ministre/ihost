@@ -1,8 +1,0 @@
-Package: ihost 
-Version: 1.0.0-beta
-Section: utils
-Priority: optional
-Architecture: amd64
-Depends:
-Maintainer: Aleksandr Gorelik <alx.gorelik@gmail.com>
-Description: Sandbox package. Adding and removing hosts in inventory.yml file for further configuration using Ansible.

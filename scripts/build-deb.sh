@@ -25,6 +25,7 @@ EOL
 chmod 755 $CONTROL_FILE
 
 # Compile
+mkdir -p build/deb-package/usr/bin  # Create directory if not exist
 g++ -o build/deb-package/usr/bin/ihost src/main.cpp
 
 # Create deb-package
