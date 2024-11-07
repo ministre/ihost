@@ -1,3 +1,2 @@
 .vscode
-build/deb-package/DEBIAN/control
-build/deb-package/usr/bin/
+build
