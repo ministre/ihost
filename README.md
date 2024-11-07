@@ -11,5 +11,5 @@ The purpose of this project to learn how to create C++ applications and build de
 ```bash
 sudo apt update
 sudo apt install g++
-cd src/
+g++ -o bin/ihost src/main.cpp
 ```
