@@ -22,6 +22,8 @@ Maintainer: Aleksandr Gorelik <alx.gorelik@gmail.com>
 Description: Sandbox package. Adding and removing hosts in inventory.yml file for further configuration using Ansible.
 EOL
 
+chmod 755 $CONTROL_FILE
+
 # Compile
 g++ -o build/deb-package/usr/bin/ihost src/main.cpp
 
