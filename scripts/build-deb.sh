@@ -25,11 +25,10 @@ EOL
 chmod 755 $CONTROL_FILE
 
 # Compile
-#mkdir -p build/deb-package/usr/bin
-#g++ -o build/deb-package/usr/bin/ihost src/main.cpp -lyaml-cpp
+mkdir -p build/deb-package/usr/bin
+g++ -o build/deb-package/usr/bin/ihost src/main.cpp -lyaml-cpp
 
-# cmake
-# cmake --build ./build
+# Compile with CMake
 cmake -S . -B build/deb-package/usr/bin
 
 # Create deb-package

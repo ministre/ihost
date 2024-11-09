@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-# Название вашего проекта
+# Название проекта
 project(IHost)
 
 # Установка стандарта C++
