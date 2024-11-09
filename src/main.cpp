@@ -31,7 +31,7 @@ void addHostToInventory(YAML::Node &inventory, const std::string &name, const st
 }
 
 bool hostExistsInInventory(YAML::Node &inventory, const std::string &hostname) {
-    return inventory["all"]["hosts"][hostname] != nullptr;
+    return inventory["all"]["hosts"][hostname].IsDefined();
 }
 
 void removeHostFromInventory(YAML::Node &inventory, const std::string &hostname) {
