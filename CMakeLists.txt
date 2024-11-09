@@ -20,4 +20,4 @@ find_package(yaml-cpp REQUIRED)
 add_executable(ihost src/main.cpp)
 
 # Подключение зависимости
-target_link_libraries(ihost PRIVATE yaml-cpp::yaml-cpp)
+target_link_libraries(ihost PRIVATE yaml-cpp)

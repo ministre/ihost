@@ -28,8 +28,9 @@ chmod 755 $CONTROL_FILE
 #mkdir -p build/deb-package/usr/bin
 #g++ -o build/deb-package/usr/bin/ihost src/main.cpp -lyaml-cpp
 
-cmake
-cmake --build ./build
+# cmake
+# cmake --build ./build
+cmake -S . -B build/deb-package/usr/bin
 
 # Create deb-package
 dpkg-deb --build build/deb-package packages/debs/debian/bookworm/ihost_"${VERSION}"_amd64.deb
