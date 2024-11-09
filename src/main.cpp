@@ -42,6 +42,7 @@ void writeInventoryToFile(const YAML::Node &inventory) {
     std::string filename = "inventory.yml";
     std::ofstream outFile(filename);
     outFile << inventory;
+    outFile << std::endl;
     outFile.close();
     std::cout << "File '" << filename << "' updated successfully.\n";
 }
@@ -100,7 +101,7 @@ int main(int argc, char *argv[]) {
         writeInventoryToFile(inventory);
         std::cout << "Host removed (" << name << ")" << std::endl;
     } else if (command == "-v") {
-        std::cout << "1.0.8" << std::endl;
+        std::cout << "1.0.9" << std::endl;
     } else {
         displayHelp();
     }
