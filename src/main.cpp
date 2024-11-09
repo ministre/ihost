@@ -1,6 +1,5 @@
 #include<iostream>
 #include <fstream>
-#include <string>
 #include <yaml-cpp/yaml.h>
 
 void displayHelp() {
@@ -10,21 +9,41 @@ void displayHelp() {
     std::cout << "  ihost -v                            - Show application version\n";
 }
 
-void createOrUpdateInventory(const std::string &yml) {
+void createOrUpdateInventory(const std::string& hostname) {
     std::string filename = "inventory.yml";
-    std::ifstream inventoryfile(filename);
+    YAML::Node inventory;
+//    std::ifstream inventoryfile(filename);
 
-    if (inventoryfile.good()) {
+    // Попытка загрузить существующий файл
+    if (std::ifstream(filename)) {
+        inventory = YAML::LoadFile(filename);
         std::cout << "File '" << filename << "' exists. Opening the file...\n";
-        // логика для работы с файлом
-        inventoryfile.close();
     } else {
         std::cout << "File '" << filename << "' does not exist. Creating a new file...\n";
-        std::ofstream outfile(filename);
-        outfile << yml;
-        outfile.close();
-        std::cout << "File '" << filename << "' created successfully.\n";
+        inventory["all"]["vars"] = YAML::Node();
+        inventory["all"]["hosts"] = YAML::Node();
     }
+
+    // Добавление нового хоста в секцию hosts
+    inventory["all"]["hosts"][hostname] = hostname; // Добавляем хост
+
+    // Запись обратно в файл
+    std::ofstream outFile(filename);
+    outFile << inventory;
+    outFile.close();
+    std::cout << "File '" << filename << "' updated successfully.\n";
+
+//    if (inventoryfile.good()) {
+//        std::cout << "File '" << filename << "' exists. Opening the file...\n";
+//        // логика для работы с файлом
+//        inventoryfile.close();
+//    } else {
+//        std::cout << "File '" << filename << "' does not exist. Creating a new file...\n";
+//        std::ofstream outfile(filename);
+//        outfile << yml;
+//        outfile.close();
+//        std::cout << "File '" << filename << "' created successfully.\n";
+//    }
 }
 
 std::string generateYml() {
@@ -46,16 +65,15 @@ int main(int argc, char *argv[]) {
     if (command == "-a" && argc == 4) {
         std::string name = argv[2];
         std::string ip = argv[3];
-        std::string yml = generateYml();
-        createOrUpdateInventory(yml);
+        createOrUpdateInventory(name);
         std::cout << "Added " << name << " with " << ip << std::endl;
     } else if (command == "-r" && argc == 3) {
         std::string name = argv[2];
-        std::string yml = generateYml();
-        createOrUpdateInventory(yml);
+//        std::string yml = generateYml();
+        createOrUpdateInventory(name);
         std::cout << "Removed " << name << std::endl;
     } else if (command == "-v") {
-        std::cout << "1.0.1" << std::endl;
+        std::cout << "1.0.2" << std::endl;
     } else {
         displayHelp();
     }
