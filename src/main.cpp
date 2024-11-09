@@ -30,6 +30,10 @@ void addHostToInventory(YAML::Node &inventory, const std::string &name, const st
     inventory["all"]["hosts"][name]["ansible_user"] = ansible_user;
 }
 
+bool hostExistsInInventory(YAML::Node &inventory, const std::string &hostname) {
+    return inventory["all"]["hosts"][hostname] != nullptr;
+}
+
 void removeHostFromInventory(YAML::Node &inventory, const std::string &hostname) {
     inventory["all"]["hosts"].remove(hostname);
 }
@@ -86,11 +90,17 @@ int main(int argc, char *argv[]) {
     } else if (command == "-r" && argc == 3) {
         std::string name = argv[2];
         YAML::Node inventory = createOrLoadInventory();
+
+        if (!hostExistsInInventory(inventory, name)) {
+            std::cout << "Error: Host '" << name << "' not found." << std::endl;
+            return 1;
+        }
+
         removeHostFromInventory(inventory, name);
         writeInventoryToFile(inventory);
         std::cout << "Host removed (" << name << ")" << std::endl;
     } else if (command == "-v") {
-        std::cout << "1.0.7" << std::endl;
+        std::cout << "1.0.8" << std::endl;
     } else {
         displayHelp();
     }
