@@ -4,9 +4,9 @@
 
 void displayHelp() {
     std::cout << "Usage:\n";
-    std::cout << "  ihost -a <name> <ansible_host> <ansible_port>   - Add new host\n";
-    std::cout << "  ihost -r <name>                                 - Remove host\n";
-    std::cout << "  ihost -v                                        - Show application version\n";
+    std::cout << "  ihost -a <name> <ansible_host> [ansible_port] [ansible_user]    - Add new host\n";
+    std::cout << "  ihost -r <name>                                                 - Remove host\n";
+    std::cout << "  ihost -v                                                        - Show application version\n";
 }
 
 YAML::Node createOrLoadInventory() {
@@ -24,9 +24,10 @@ YAML::Node createOrLoadInventory() {
 }
 
 void addHostToInventory(YAML::Node &inventory, const std::string &name, const std::string &ansible_host,
-                        const std::string &ansible_port) {
+                        const std::string &ansible_port, const std::string &ansible_user) {
     inventory["all"]["hosts"][name]["ansible_host"] = ansible_host;
     inventory["all"]["hosts"][name]["ansible_port"] = ansible_port;
+    inventory["all"]["hosts"][name]["ansible_user"] = ansible_user;
 }
 
 void removeHostFromInventory(YAML::Node &inventory, const std::string &hostname) {
@@ -45,7 +46,7 @@ bool isValidPort(const std::string &port) {
     try {
         int portNumber = std::stoi(port);
         return (portNumber >= 1 && portNumber <= 65535);
-    } catch (const std::invalid_argument&) {
+    } catch (const std::invalid_argument &) {
         return false;
     }
 }
@@ -58,21 +59,30 @@ int main(int argc, char *argv[]) {
     }
     std::string command = argv[1];
 
-    if (command == "-a" && argc == 5) {
+    if (command == "-a" && (argc == 4 || argc == 5 || argc == 6)) {
         std::string name = argv[2];
         std::string ansible_host = argv[3];
-        std::string ansible_port = argv[4];
+        std::string ansible_port = "22";
+        std::string ansible_user = "root";
 
-        if (!isValidPort(ansible_port)) {
-            std::cerr << "Error: ansible_port value must be between 1 and 65535." << std::endl;
-            return 1;
+        if (argc >= 5) {
+            ansible_port = argv[4];
+            if (!isValidPort(ansible_port)) {
+                std::cerr << "Error: ansible_port value must be between 1 and 65535." << std::endl;
+                return 1;
+            }
+        }
+
+        if (argc == 6) {
+            ansible_user = argv[5];
         }
 
         YAML::Node inventory = createOrLoadInventory();
-        addHostToInventory(inventory, name, ansible_host, ansible_port);
+        addHostToInventory(inventory, name, ansible_host, ansible_port, ansible_user);
         writeInventoryToFile(inventory);
-        std::cout << "Host added (" << name << "): ansible_host=" << ansible_host << "ansible_port=" << ansible_port
-                  << std::endl;
+        std::cout << "Host added (" << name << "): ansible_host=" << ansible_host
+                  << ", ansible_port=" << ansible_port
+                  << ", ansible_user=" << ansible_user << std::endl;
     } else if (command == "-r" && argc == 3) {
         std::string name = argv[2];
         YAML::Node inventory = createOrLoadInventory();
@@ -80,7 +90,7 @@ int main(int argc, char *argv[]) {
         writeInventoryToFile(inventory);
         std::cout << "Host removed (" << name << ")" << std::endl;
     } else if (command == "-v") {
-        std::cout << "1.0.6" << std::endl;
+        std::cout << "1.0.7" << std::endl;
     } else {
         displayHelp();
     }
