@@ -9,12 +9,9 @@ void displayHelp() {
     std::cout << "  ihost -v                            - Show application version\n";
 }
 
-void createOrUpdateInventory(const std::string& hostname) {
+YAML::Node createOrLoadInventory() {
     std::string filename = "inventory.yml";
     YAML::Node inventory;
-//    std::ifstream inventoryfile(filename);
-
-    // Попытка загрузить существующий файл
     if (std::ifstream(filename)) {
         inventory = YAML::LoadFile(filename);
         std::cout << "File '" << filename << "' exists. Opening the file...\n";
@@ -23,34 +20,23 @@ void createOrUpdateInventory(const std::string& hostname) {
         inventory["all"]["vars"] = YAML::Node();
         inventory["all"]["hosts"] = YAML::Node();
     }
+    return inventory;
+}
 
-    // Добавление нового хоста в секцию hosts
-    inventory["all"]["hosts"][hostname] = hostname; // Добавляем хост
+void addHostToInventory(YAML::Node &inventory, const std::string &hostname) {
+    inventory["all"]["hosts"][hostname] = hostname;
+}
 
-    // Запись обратно в файл
+void removeHostFromInventory(YAML::Node &inventory, const std::string &hostname) {
+    inventory["all"]["hosts"].remove(hostname);
+}
+
+void writeInventoryToFile(const YAML::Node &inventory) {
+    std::string filename = "inventory.yml";
     std::ofstream outFile(filename);
     outFile << inventory;
     outFile.close();
     std::cout << "File '" << filename << "' updated successfully.\n";
-
-//    if (inventoryfile.good()) {
-//        std::cout << "File '" << filename << "' exists. Opening the file...\n";
-//        // логика для работы с файлом
-//        inventoryfile.close();
-//    } else {
-//        std::cout << "File '" << filename << "' does not exist. Creating a new file...\n";
-//        std::ofstream outfile(filename);
-//        outfile << yml;
-//        outfile.close();
-//        std::cout << "File '" << filename << "' created successfully.\n";
-//    }
-}
-
-std::string generateYml() {
-    return R"(all:
-  vars: {}
-  hosts: {}
-)";
 }
 
 int main(int argc, char *argv[]) {
@@ -59,21 +45,23 @@ int main(int argc, char *argv[]) {
         displayHelp();
         return 1;
     }
-
     std::string command = argv[1];
 
     if (command == "-a" && argc == 4) {
         std::string name = argv[2];
         std::string ip = argv[3];
-        createOrUpdateInventory(name);
+        YAML::Node inventory = createOrLoadInventory();
+        addHostToInventory(inventory, name);
+        writeInventoryToFile(inventory);
         std::cout << "Added " << name << " with " << ip << std::endl;
     } else if (command == "-r" && argc == 3) {
         std::string name = argv[2];
-//        std::string yml = generateYml();
-        createOrUpdateInventory(name);
+        YAML::Node inventory = createOrLoadInventory();
+        removeHostFromInventory(inventory, name);
+        writeInventoryToFile(inventory);
         std::cout << "Removed " << name << std::endl;
     } else if (command == "-v") {
-        std::cout << "1.0.2" << std::endl;
+        std::cout << "1.0.3" << std::endl;
     } else {
         displayHelp();
     }
