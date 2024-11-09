@@ -4,9 +4,9 @@
 
 void displayHelp() {
     std::cout << "Usage:\n";
-    std::cout << "  ihost -a <hostname> <ipv4_public>   - Add new host\n";
-    std::cout << "  ihost -r <hostname>                 - Remove host\n";
-    std::cout << "  ihost -v                            - Show application version\n";
+    std::cout << "  ihost -a <name> <ansible_host>  - Add new host\n";
+    std::cout << "  ihost -r <name>                 - Remove host\n";
+    std::cout << "  ihost -v                        - Show application version\n";
 }
 
 YAML::Node createOrLoadInventory() {
@@ -23,9 +23,8 @@ YAML::Node createOrLoadInventory() {
     return inventory;
 }
 
-void addHostToInventory(YAML::Node &inventory, const std::string &hostname, const std::string &ansible_host) {
-    inventory["all"]["hosts"][hostname] = hostname;
-    inventory["all"]["hosts"][hostname]["ansible_host"] = ansible_host;
+void addHostToInventory(YAML::Node &inventory, const std::string &name, const std::string &ansible_host) {
+    inventory["all"]["hosts"][name]["ansible_host"] = ansible_host;
 }
 
 void removeHostFromInventory(YAML::Node &inventory, const std::string &hostname) {
@@ -50,20 +49,19 @@ int main(int argc, char *argv[]) {
 
     if (command == "-a" && argc == 4) {
         std::string name = argv[2];
-        std::string ip = argv[3];
-        std::string ansible_host = argv[4];
+        std::string ansible_host = argv[3];
         YAML::Node inventory = createOrLoadInventory();
         addHostToInventory(inventory, name, ansible_host);
         writeInventoryToFile(inventory);
-        std::cout << "Added " << name << " with " << ip << std::endl;
+        std::cout << "Host added (" << name << "): ansible_host= " << ansible_host << std::endl;
     } else if (command == "-r" && argc == 3) {
         std::string name = argv[2];
         YAML::Node inventory = createOrLoadInventory();
         removeHostFromInventory(inventory, name);
         writeInventoryToFile(inventory);
-        std::cout << "Removed " << name << std::endl;
+        std::cout << "Host removed (" << name << ")" << std::endl;
     } else if (command == "-v") {
-        std::cout << "1.0.4" << std::endl;
+        std::cout << "1.0.5" << std::endl;
     } else {
         displayHelp();
     }
