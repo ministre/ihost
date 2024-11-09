@@ -10,7 +10,7 @@ void displayHelp() {
     std::cout << "  ihost -v                            - Show application version\n";
 }
 
-void createOrUpdateInventory(const std::string& yml) {
+void createOrUpdateInventory(const std::string &yml) {
     std::string filename = "inventory.yml";
     std::ifstream inventoryfile(filename);
 
@@ -34,7 +34,7 @@ std::string generateYml() {
 )";
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     // Check arguments count
     if (argc < 2) {
         displayHelp();
@@ -49,17 +49,14 @@ int main(int argc, char* argv[]) {
         std::string yml = generateYml();
         createOrUpdateInventory(yml);
         std::cout << "Added " << name << " with " << ip << std::endl;
-    } 
-    else if (command == "-r" && argc == 3) {
+    } else if (command == "-r" && argc == 3) {
         std::string name = argv[2];
         std::string yml = generateYml();
         createOrUpdateInventory(yml);
         std::cout << "Removed " << name << std::endl;
-    } 
-    else if (command == "-v") {
+    } else if (command == "-v") {
         std::cout << "1.0.1" << std::endl;
-    } 
-    else {
+    } else {
         displayHelp();
     }
 
