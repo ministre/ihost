@@ -1,6 +1,7 @@
 #include<iostream>
 #include <fstream>
 #include <yaml-cpp/yaml.h>
+#include <unistd.h>
 
 void displayHelp() {
     std::cout << "Usage:\n";
@@ -24,10 +25,12 @@ YAML::Node createOrLoadInventory() {
 }
 
 void addHostToInventory(YAML::Node &inventory, const std::string &name, const std::string &ansible_host,
-                        const std::string &ansible_port, const std::string &ansible_user) {
+                        const std::string &ansible_port, const std::string &ansible_user,
+                        const std::string &ansible_ssh_pass) {
     inventory["all"]["hosts"][name]["ansible_host"] = ansible_host;
     inventory["all"]["hosts"][name]["ansible_port"] = ansible_port;
     inventory["all"]["hosts"][name]["ansible_user"] = ansible_user;
+    inventory["all"]["hosts"][name]["ansible_ssh_pass"] = ansible_ssh_pass;
 }
 
 bool hostExistsInInventory(YAML::Node &inventory, const std::string &hostname) {
@@ -82,8 +85,10 @@ int main(int argc, char *argv[]) {
             ansible_user = argv[5];
         }
 
+        std::string ansible_ssh_pass = getpass("Enter SSH password: ");
+
         YAML::Node inventory = createOrLoadInventory();
-        addHostToInventory(inventory, name, ansible_host, ansible_port, ansible_user);
+        addHostToInventory(inventory, name, ansible_host, ansible_port, ansible_user, ansible_ssh_pass);
         writeInventoryToFile(inventory);
         std::cout << "Host added (" << name << "): ansible_host=" << ansible_host
                   << ", ansible_port=" << ansible_port
@@ -101,7 +106,7 @@ int main(int argc, char *argv[]) {
         writeInventoryToFile(inventory);
         std::cout << "Host removed (" << name << ")" << std::endl;
     } else if (command == "-v") {
-        std::cout << "1.0.9" << std::endl;
+        std::cout << "1.0.10" << std::endl;
     } else {
         displayHelp();
     }
