@@ -25,8 +25,11 @@ EOL
 chmod 755 $CONTROL_FILE
 
 # Compile
-mkdir -p build/deb-package/usr/bin  # Create directory if not exist
-g++ -o build/deb-package/usr/bin/ihost src/main.cpp
+#mkdir -p build/deb-package/usr/bin
+#g++ -o build/deb-package/usr/bin/ihost src/main.cpp -lyaml-cpp
+
+cmake
+cmake --build ./build
 
 # Create deb-package
-dpkg-deb --build build/deb-package packages/debs/debian/bookworm/ihost_${VERSION}_amd64.deb
+dpkg-deb --build build/deb-package packages/debs/debian/bookworm/ihost_"${VERSION}"_amd64.deb

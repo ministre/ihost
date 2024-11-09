@@ -1,4 +1,5 @@
-.vscode
-.idea
-build
+/.vscode/
+/.idea/
+/build/
 inventory.yml
+/cmake-build-debug/
