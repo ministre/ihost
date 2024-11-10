@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
         writeInventoryToFile(inventory);
         std::cout << "Host removed (" << name << ")" << std::endl;
     } else if (command == "-v") {
-        std::cout << "1.0.10" << std::endl;
+        std::cout << "1.0.11" << std::endl;
     } else {
         displayHelp();
     }

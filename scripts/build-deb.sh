@@ -17,7 +17,7 @@ Version: $VERSION
 Section: utils
 Priority: optional
 Architecture: amd64
-Depends:
+Depends: libyaml-cpp0.7
 Maintainer: Aleksandr Gorelik <alx.gorelik@gmail.com>
 Description: Sandbox package. Adding and removing hosts in inventory.yml file for further configuration using Ansible.
 EOL
